@@ -52,8 +52,10 @@ const Navbar = () => {
         <HStack>
           <Link as={ReactLink} to="/">
             <Flex alignItems="center">
-              <Icon as={GiTechnoHeart} h={6} w={6} colors="orange.400" />
-              <Text fontWeight="extrabold">Circuit City</Text>
+              <Icon as={GiTechnoHeart} h={6} w={6} color="orange.400" />
+              <Text fontWeight="extrabold" ml={1}>
+                Circuit City
+              </Text>
             </Flex>
           </Link>
           <HStack as="nav" spacing={4} display={{ base: "none", md: "flex" }}>
@@ -105,7 +107,7 @@ const Navbar = () => {
                 {link.linkName}
               </NavLink>
             ))}
-            <NavLink key="sign up" path="/registration" color="orange.500">
+            <NavLink key="sign up" path="/registration">
               Sign Up
             </NavLink>
           </Stack>
