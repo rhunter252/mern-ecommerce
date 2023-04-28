@@ -15,10 +15,10 @@ app.use(express.json());
 
 app.use("/api/products", productRoutes);
 
-// app.get("/", (req, res) => {
-//   res.send("hello world");
-// });
+app.get("/", (req, res) => {
+  res.send("hello world");
+});
 
-app.listen(port, () => {
+app.listen(5000, () => {
   console.log(`Example app listening on port ${port}`);
 });
