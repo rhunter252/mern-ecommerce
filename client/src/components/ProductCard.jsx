@@ -12,11 +12,14 @@ import {
   Link,
   HStack,
   Text,
+  useToast,
 } from "@chakra-ui/react";
 import { FiShoppingCart } from "react-icons/fi";
 import { Link as ReactLink } from "react-router-dom";
 import { StarIcon } from "@chakra-ui/icons";
 import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { addCartItem } from "../redux/actions/cartActions";
 
 const Rating = ({ rating, numberOfReviews }) => {
   const { iconSize, setIconSize } = useState("14px");
@@ -53,6 +56,29 @@ const Rating = ({ rating, numberOfReviews }) => {
 };
 
 const ProductCard = ({ product }) => {
+  const dispatch = useDispatch();
+  const toast = useToast();
+  const cartInfo = useSelector((state) => state.cart);
+  const { cart } = cartInfo;
+
+  const addItem = (id) => {
+    if (cart.some((cartItem) => cartItem.id === id)) {
+      toast({
+        description:
+          "This item is already in your cart. Go to your cart to change the amount.",
+        status: "error",
+        isClosable: true,
+      });
+    } else {
+      dispatch(addCartItem(id, 1));
+      toast({
+        description: "Item has been added.",
+        status: "success",
+        isClosable: true,
+      });
+    }
+  };
+
   return (
     <Stack
       p="2"
@@ -65,7 +91,7 @@ const ProductCard = ({ product }) => {
       shadow="lg"
       position="relative"
     >
-      {product.isNew && (
+      {product.productIsNew && (
         <Circle
           size="10px"
           position="absolute"
@@ -80,17 +106,18 @@ const ProductCard = ({ product }) => {
           position="absolute"
           top={2}
           right={2}
-          bg="green.300"
+          bg="red.200"
         />
       )}
-      <Image src={product.image} alt={product.name} roundedTop="lg" />
+      <Image p={4} src={product.image} alt={product.name} roundedTop="lg" />
+
       <Box flex="1" maxH="5" alignItems="baseline">
         {product.stock <= 0 && (
           <Badge rounded="full" px="2" fontSize="0.8em" colorScheme="red">
-            Sold Out
+            Sold out
           </Badge>
         )}
-        {product.isNew && (
+        {product.productIsNew && (
           <Badge rounded="full" px="2" fontSize="0.8em" colorScheme="green">
             New
           </Badge>
@@ -99,11 +126,11 @@ const ProductCard = ({ product }) => {
       <Flex mt="1" justifyContent="space-between" alignContent="center">
         <Link
           as={ReactLink}
-          to={`/product${product._id}`}
+          to={`/product/${product._id}`}
           pt="2"
           cursor="pointer"
         >
-          <Box fontSize="2xl" fontWeight="semibold" lineheight="tight">
+          <Box fontSize="2xl" fontWeight="semibold" as="h4" lineHeight="tight">
             {product.name}
           </Box>
         </Link>
@@ -116,24 +143,25 @@ const ProductCard = ({ product }) => {
       </Flex>
       <Flex justify="space-between">
         <Box fontSize="2xl" color={useColorModeValue("gray.800", "white")}>
-          <Box
-            as="span"
-            color={useColorModeValue("gray.800", "white")}
-            fontSize="lg"
-          >
+          <Box as="span" color={"gray.600"} fontSize="lg">
             $
           </Box>
-          {product.price}
+          {Number(product.price).toFixed(2)}
         </Box>
         <Tooltip
           label="Add to cart"
           bg="white"
-          placement="top"
-          color="gray.800"
-          fontSize="1.2rem"
+          placement={"top"}
+          color={"gray.800"}
+          fontSize={"1.2em"}
         >
-          <Button variant="ghost" display="flex" disabled={product.stock <= 0}>
-            <Icon as={FiShoppingCart} h={7} w={7} alignSelf="center" />
+          <Button
+            variant="ghost"
+            display={"flex"}
+            isDisabled={product.stock <= 0}
+            onClick={() => addItem(product._id)}
+          >
+            <Icon as={FiShoppingCart} h={7} w={7} alignSelf={"center"} />
           </Button>
         </Tooltip>
       </Flex>
