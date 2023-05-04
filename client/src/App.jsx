@@ -12,9 +12,9 @@ function App() {
     <ChakraProvider>
       <Router>
         <Navbar />
-        <LandingScreen />
         <main>
           <Routes>
+            <Route path="/" element={<LandingScreen />}></Route>
             <Route path="/product/:id" element={<ProductScreen />} />
             <Route path="/products" element={<ProductsScreen />} />
             <Route path="/cart" element={<CartScreen />} />
